@@ -1,0 +1,47 @@
+CREATE TABLE students (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(128) NOT NULL,
+  lastname VARCHAR(128) NOT NULL,
+  avg_mark DECIMAL(3, 2) CHECK (avg_mark >= 0 AND avg_mark <= 5),
+  gender ENUM('M', 'F')
+);
+
+
+2.
+INSERT INTO students (name, lastname, avg_mark, gender) VALUES ('Олег', 'Петров', 4.3, 'M');
+INSERT INTO students (name, lastname, avg_mark, gender) VALUES ('Семен', 'Степанов', 3.1, 'M');
+INSERT INTO students (name, lastname, avg_mark, gender) VALUES ('Ольга', 'Семенова', 4.7, 'F');
+INSERT INTO students (name, lastname, avg_mark, gender) VALUES ('Игорь', 'Романов', 3.1, 'M');
+INSERT INTO students (name, lastname, avg_mark, gender) VALUES ('Ирина', 'Иванова', 2.2, 'F');
+
+---------------------------------------------------------------------------------------------------------
+
+Найти набор уникальных оценок
+
+Увеличить всем учащимся оценку в 10 раз
+
+Поменяйте у Олега Петрова фамилию на Сидоров.
+
+Для всех учеников, у которых оценка не больше 31 увеличить на 10
+
+
+1.
+SELECT DISTINCT avg_mark FROM students;
+
+2.
+UPDATE students SET avg_mark = LEAST(avg_mark * 10, 5);  --вот тут я потратил тонну нервов и времени, но так и не нашел условия при котором я смогу обойти ПРОВЕРКУ
+							 --поля которую сам же и написал(согласно условия задания). Поэтому используя функцию LEAST уножил, но и соблюл ограничение.
+
+2.1.-- Однако, если допустить, что МЫ МОЖЕМ сбросить ПРОВЕРКУ то решение поидее должно быть следующим
+
+ALTER TABLE students DROP CHECK students_chk_1;
+ALTER TABLE students ADD CHECK (avg_mark >= 0 AND avg_mark <= 50);
+UPDATE students SET avg_mark = avg_mark * 10;
+
+3.
+
+UPDATE students SET lastname = 'Сидоров' WHERE name = 'Олег' AND lastname = 'Петров';
+
+4.
+
+UPDATE students SET avg_mark = avg_mark + 10 WHERE avg_mark <= 31;
